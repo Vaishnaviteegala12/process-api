@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+
+	<flow name="getLibrariesImplimentationFlow" doc:id="bd0ca087-c406-4672-952d-3fdeed5a4c06" >
+		<logger level="INFO" doc:name="beforeLogger" doc:id="80d6b1a1-ac48-4ce0-922d-7b1ac970d97d" message="#['Before calling system api']"/>
+		<http:request method="GET" doc:name="system api call" doc:id="f732b638-2d67-4be7-a3c9-581c18819bdf" config-ref="HTTP_Request_configuration" path="/api/libraries">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	'client_secret' : '21511AAE39854a22857eeac2F1663FEB',
+	'x-correlation-id' : '89676789',
+	'client_id' : '8a5ca7e1452e465ba6619822923297c6'
+}]]]></http:headers>
+		</http:request>
+		<set-variable value="#[payload]" doc:name="sysApiResponse" doc:id="1e6e2c28-5316-41b9-94f5-082e96436653" variableName="sysApiResponse"/>
+		<logger level="INFO" doc:name="afterLogger" doc:id="a9d72ddf-67ea-406f-9433-8b90512e9563" message="#['after calling system api']"/>
+		<ee:transform doc:name="systemApiResponse" doc:id="44742f07-d9f4-4713-a500-556ee180b2d6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    'libraries': vars.sysApiResponse map (item, index) ->  
+    
+    {
+     'libraryCode' : item.libraryCode,
+     'Branch' : item.libraryBranch,
+     'totalBooks' : item.totalBooks,
+     'BooksAvailable' : item.availableBooks,
+     'rentedBooks' : item.booksRented
+    }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

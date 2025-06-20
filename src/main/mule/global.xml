@@ -10,10 +10,14 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
 
     <http:listener-config name="process-ibs-library-httpListenerConfig">
-        <http:listener-connection host="0.0.0.0" port="8081" />
+        <http:listener-connection host="0.0.0.0" port="8089" />
     </http:listener-config>
     <apikit:config name="process-ibs-library-config" api="process-ibs-library.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
 	<configuration-properties doc:name="Configuration properties" doc:id="ba9ed580-5096-40ff-a423-885d53e7b577" file="properties/${env}.yaml" />	
-<!-- 	<api-gateway:autodiscovery apiId="${Api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="ccefb1dd-d33c-4767-a3e1-023d0af393e6" flowRef="process-ibs-library-main" />
- -->	
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="a7398652-478c-447e-9465-8f97624bbf22" >
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>
+	<configuration doc:name="Configuration" doc:id="f1bd49e1-0b22-4484-bfa6-2936bb453ec7" defaultErrorHandler-ref="globalErrorHandler" />		
+<!--  	<api-gateway:autodiscovery apiId="${Api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="ccefb1dd-d33c-4767-a3e1-023d0af393e6" flowRef="process-ibs-library-main" />
+ --> 
 </mule>

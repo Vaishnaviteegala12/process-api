@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<error-handler name="globalErrorHandler" doc:id="efc63812-e0c2-4266-835b-a09f8df564c6" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="8ccf4381-3d61-45a1-950e-9b926de2d5c2" type="DB:CONNECTIVITY">
+			<logger level="INFO" doc:name="errorLogger" doc:id="eb362fe4-0712-4620-97fa-c22b4766577c" message="### error handling flow"/>
+			<ee:transform doc:name="errorResponse" doc:id="c6b1fb96-ac4c-40df-8d44-e40d5722e34c" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	errorapplication: "error occured in ibs-library-management system api",
+	errorDiscriptiopn: error.discription,
+	errorDetails: error.Type
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="d1b1ed57-c8ea-4395-ae85-631b38a57c4e" type="ANY">
+			<logger level="INFO" doc:name="Logger" doc:id="a19ad8d3-9430-437d-a9e3-33104aad9e79" message="### common block"/>
+			<ee:transform doc:name="Transform Message" doc:id="56d4ee4f-e7f7-4916-93df-85d93cfcd365" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	errorapplication: "error occured in ibs-library-management system api",
+	errorDiscriptiopn: error.discription,
+	errorDetails: error.errorType
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-continue>
+	</error-handler>
+</mule>

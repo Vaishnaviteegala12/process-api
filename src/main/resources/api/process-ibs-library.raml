@@ -8,7 +8,7 @@ protocols:
 
 traits:
   headerInfo: !include /exchange_modules/e28b1056-fd3b-4c9c-8a6e-690b26b38556/common-headers/1.0.0/common-headers.raml
-
+  queryParams: !include /traits/queryPtrait.raml
 types:
   get-libraries: !include /dataTypes/get-libraries-dataType.raml
   post-book-request: !include /dataTypes/post-book-req-dataType.raml
@@ -64,12 +64,8 @@ types:
               }
   get:
     is:
-    - headerInfo: 
-    queryParameters:
-      rating:
-        example: '4'
-      libaryCode:
-        example: 'LB123'  
+    - headerInfo
+    - queryParams
     responses:
       200:
         body:
